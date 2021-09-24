@@ -22,24 +22,51 @@ public class JpaMain1 {
 		tx.begin();
 		
 		try {
-			Member member = new Member();
-			member.setUserName("hongma");
-			member.setAge(31);
-			em.persist(member);
+			Team team1 = new Team();
+			team1.setName("팀A");
+			em.persist(team1);
 			
-//			Member result = 
-//					em.createQuery("select m from Member m WHERE m.userName = :userName", Member.class)
-//						.setParameter("userName","hongma")
-//						.getSingleResult();
-//			System.out.println(result.getUserName());
+			Team team2 = new Team();
+			team2.setName("팀B");
+			em.persist(team2);
 			
-//			em.createQuery("select o from Order o",Order.class);
+			Member mem1 = new Member();
+			mem1.setUserName("회원1");
+			mem1.setTeam(team1);
+			em.persist(mem1);
+			
+			Member mem2 = new Member();
+			mem2.setUserName("회원2");
+			mem2.setTeam(team1);
+			em.persist(mem2);
 			
 			
-			List<MemberDTO> result = em.createQuery("select new com.example.demo.ex1.MemberDTO(m.userName,m.age) from Member m", MemberDTO.class)
-				.getResultList();
+			Member mem3 = new Member();
+			mem3.setUserName("회원3");
+			mem3.setTeam(team2);
+			em.persist(mem3);
+	
+			em.flush();
+			em.clear();
 			
-			System.out.println(result.get(0).getUserName());
+			
+//			String query = "select m from Member m join m.team";
+//			
+//			List<Member> result = em.createQuery(query, Member.class)
+//									.getResultList();
+//			
+//			for(Member member : result) {
+//				System.out.println(member.getUserName() +" ----  "+member.getTeam().getName());
+//			}
+			
+//			em.createNamedQuery("Member.findByUserName")
+//				.setParameter("userName","회원1").getResultList();
+				
+			em.createQuery("update Member m set m.age = 20").executeUpdate();
+			em.clear();
+			
+			Member findMember = em.find(Member.class,mem1.getId());
+			System.out.println("Member1.age = "+findMember.getAge());
 			
 			tx.commit();
 			
